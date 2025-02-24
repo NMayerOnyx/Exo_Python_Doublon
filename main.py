@@ -1,3 +1,5 @@
+import os
+
 class File :
     def __init__ (self, nom, extension, taille, premocts, date, signature) :
         self.nom = nom
@@ -10,7 +12,7 @@ class File :
 repoSlot1 = ""
 repoSlot2 = ""
 
-def loadRepo ():
+def loadRepo () :
     global repoSlot1
     global repoSlot2
     selectr = input("Quel emplacement de chemin? (1 ou 2)")
@@ -23,9 +25,24 @@ def loadRepo ():
         else :
             repoSlot2 = chemin
 
-loadRepo()
-print(repoSlot1)
-loadRepo()
-print(repoSlot2)
+def checkRepo (repertoire) :
+    filelist = []
+    for racine, repertoires, fichiers in os.walk(repertoire):
+        for fichier in fichiers:
+            filelist.append(os.path.join(racine, fichier))
+    print(filelist)
+    
+
+def lister_fichiers_recursivement(repertoire):
+    for racine, repertoires, fichiers in os.walk(repertoire):
+        for fichier in fichiers:
+            print(os.path.join(racine, fichier))
+ 
+
+
 
 loadRepo()
+print(repoSlot1)
+checkRepo(repoSlot1)
+
+lister_fichiers_recursivement(repoSlot1)
