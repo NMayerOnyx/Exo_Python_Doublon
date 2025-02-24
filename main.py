@@ -69,20 +69,24 @@ def loadRepo () :
             repoSlot2 = chemin
 
 def checkRepo (repertoire) :
-    print("=================REPO CHEKUP START=================")
+    print("\n\n\n=================REPO CHEKUP START=================\n\n\n")
     filelist = []
+    checked =[]
     for racine, repertoires, fichiers in os.walk(repertoire):
         for fichier in fichiers:
             filelist.append(os.path.join(racine, fichier))
+    print("====LISTE DES FICHIERS====")
     print(filelist)
     for i in range(len(filelist)) : 
-        print("loop1 :", i)
+        print("+++================================+++")
+        print("Fichier comparant :", i)
         fichier1 = File(filelist[i])
-        print("+++================+++")
-        for f in range(len(filelist)) :
-            result = False 
-            if i !=f :
-                print("loop2 :", f)
+        print("+++================================+++")
+        for f in range(len(filelist)-i) :
+            f = f+i
+            if i != f :
+                print("===---------------===")
+                print("Fichier comparé :", f)
                 fichier2 = File(filelist[f])
                 if fichier1.extension == fichier2.extension:
                     fichier1.date = os.path.getmtime(filelist[i])
@@ -108,7 +112,7 @@ def checkRepo (repertoire) :
                                     print(fichier1.nom, "et", fichier2.nom, "sont identiques!!")
                 else:
                     print(fichier1.nom, "et", fichier2.nom, "sont différents.")
-
+                print("===---------------===")
                     
 
 
