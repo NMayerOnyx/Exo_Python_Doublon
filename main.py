@@ -1,5 +1,6 @@
 import os
 import time
+import hashlib
 
 class File :
 
@@ -34,6 +35,23 @@ class File :
     def fileSign():
         None
 
+def calculate_md5(file_path):
+    '''calcule le MD5 du fichier nommé file_path'''
+    with open(file_path, 'rb') as f:
+        hash_md5 = hashlib.md5()
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash_md5.update(chunk)
+        return hash_md5.hexdigest()
+
+def octets_vers_chaine_hex(octets):
+    '''converti la chaine d'octets en format hexadécimal'''
+    return ''.join(f'{octet:02x}' for octet in octets)
+
+def lister_fichiers_recursivement(repertoire):
+    for racine, repertoires, fichiers in os.walk(repertoire):
+        for fichier in fichiers:
+            print(os.path.join(racine, fichier))
+
 repoSlot1 = ""
 repoSlot2 = ""
 
@@ -51,6 +69,7 @@ def loadRepo () :
             repoSlot2 = chemin
 
 def checkRepo (repertoire) :
+    print("=================REPO CHEKUP START=================")
     filelist = []
     for racine, repertoires, fichiers in os.walk(repertoire):
         for fichier in fichiers:
@@ -67,8 +86,29 @@ def checkRepo (repertoire) :
                 fichier2 = File(filelist[f])
                 if fichier1.extension == fichier2.extension:
                     fichier1.date = os.path.getmtime(filelist[i])
-                    print(fichier1.date)
+                    print("time1 : ", fichier1.date)
                     fichier2.date = os.path.getmtime(filelist[f])
+                    print("time2 : ", fichier2.date)
+                    if fichier1.date == fichier2.date :
+                        fichier1.taille = os.path.getsize(filelist[i])
+                        print("size1 : ", fichier1.taille)
+                        fichier2.taille = os.path.getsize(filelist[f])
+                        print("size1 : ", fichier2.taille)
+                        if fichier1.taille == fichier2.taille :
+                            with open(filelist[i], "rb") as g:
+                                premiers_octets = g.read(5)
+                            fichier1.premoct = octets_vers_chaine_hex(premiers_octets)
+                            with open(filelist[f], "rb") as g:
+                                premiers_octets = g.read(5)
+                            fichier2.premoct = octets_vers_chaine_hex(premiers_octets)
+                            if fichier1.premoct == fichier2.premoct : 
+                                fichier1.signature = calculate_md5(fichier1.cheminfichier)
+                                fichier2.signature = calculate_md5(fichier2.cheminfichier)
+                                if fichier1.signature == fichier2.signature :
+                                    print(fichier1.nom, "et", fichier2.nom, "sont identiques!!")
+                else:
+                    print(fichier1.nom, "et", fichier2.nom, "sont différents.")
+
                     
 
 
@@ -76,10 +116,7 @@ def checkRepo (repertoire) :
 
     
 
-def lister_fichiers_recursivement(repertoire):
-    for racine, repertoires, fichiers in os.walk(repertoire):
-        for fichier in fichiers:
-            print(os.path.join(racine, fichier))
+
  
 
 repoSlot1="C:\\Users\\Nicolas\\Desktop\\repo MNS\\python_exo_doublons\\dossier_test"
@@ -90,4 +127,15 @@ checkRepo(repoSlot1)
 fichiertest = File("C:\\Users\\Nicolas\\Desktop\\repo MNS\\python_exo_doublons\\dossier_test\\nhazrek.pdf")
 
 fichiertest.date = os.path.getmtime(fichiertest.cheminfichier)
+fichiertest.taille = os.path.getsize(fichiertest.cheminfichier)
+with open(fichiertest.cheminfichier, "rb") as f:
+    premiers_octets_test = f.read(5)
+chaine_hex = octets_vers_chaine_hex(premiers_octets_test)
+
+
+
 print(fichiertest.date)
+print(fichiertest.taille)
+print (premiers_octets_test)
+print (chaine_hex)
+print('hash:', calculate_md5(fichiertest.cheminfichier))
