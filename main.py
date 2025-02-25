@@ -335,4 +335,5 @@ print (chaine_hex)
 print('hash:', calculate_md5(fichiertest.cheminfichier))
 
 
-checkRepoCopy ("C:\\Users\\Nicolas\\Desktop\\repo MNS\\python_exo_doublons\\dossier1copyme","C:\\Users\\Nicolas\\Desktop\\repo MNS\\python_exo_doublons\\dossier2copyme")
+"""checkRepoCopy ("C:\\Users\\Nicolas\\Desktop\\repo MNS\\python_exo_doublons\\dossier1copyme","C:\\Users\\Nicolas\\Desktop\\repo MNS\\python_exo_doublons\\dossier2copyme")"""
+checkRepoDel ("C:\\Users\\Nicolas\\Desktop\\repo MNS\\python_exo_doublons\\dossier1delme","C:\\Users\\Nicolas\\Desktop\\repo MNS\\python_exo_doublons\\dossier2delme")
