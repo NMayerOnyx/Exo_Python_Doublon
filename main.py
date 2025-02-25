@@ -1,6 +1,7 @@
 import os
 import time
 import hashlib
+import shutil
 
 class File :
 
@@ -184,6 +185,126 @@ def checkRepoTwo (repertoire1, repertoire2) :
             '''idem du checkup précédent, sans anti répétition car les fichiers de deux dossiers différents ne peuvent pas se rescanner entre eux'''
 
         
+def checkRepoDel (repertoire1, repertoire2) :
+    print("\n\n\n=================DOUBLE REPO CHEKUP START=================\n\n\n")
+    filelist1 = []
+    filelist2 = []
+    for racine, repertoires, fichiers in os.walk(repertoire1):
+        for fichier in fichiers:
+            filelist1.append(os.path.join(racine, fichier))
+    print("====LISTE DES FICHIERS 1====")
+    print(filelist1)
+
+    for racine, repertoires, fichiers in os.walk(repertoire2):
+        for fichier in fichiers:
+            filelist2.append(os.path.join(racine, fichier))
+    print("====LISTE DES FICHIERS 1====")
+    print(filelist2)
+
+    for i in range(len(filelist1)) : 
+        print("+++================================+++")
+        print("Fichier comparant :", i)
+        fichier1 = File(filelist1[i])
+        print("+++================================+++")
+        for f in range(len(filelist2)) :
+
+            print("===---------------===")
+            print("Fichier comparé :", f)
+            fichier2 = File(filelist2[f])
+            if fichier1.extension == fichier2.extension:
+                fichier1.date = os.path.getmtime(filelist1[i])
+                print("time1 : ", fichier1.date)
+                fichier2.date = os.path.getmtime(filelist2[f])
+                print("time2 : ", fichier2.date)
+                if fichier1.date == fichier2.date :
+                    fichier1.taille = os.path.getsize(filelist1[i])
+                    print("size1 : ", fichier1.taille)
+                    fichier2.taille = os.path.getsize(filelist2[f])
+                    print("size1 : ", fichier2.taille)
+                    if fichier1.taille == fichier2.taille :
+                        with open(filelist1[i], "rb") as g:
+                            premiers_octets = g.read(5)
+                        fichier1.premoct = octets_vers_chaine_hex(premiers_octets)
+                        with open(filelist2[f], "rb") as g:
+                            premiers_octets = g.read(5)
+                        fichier2.premoct = octets_vers_chaine_hex(premiers_octets)
+                        if fichier1.premoct == fichier2.premoct : 
+                            fichier1.signature = calculate_md5(fichier1.cheminfichier)
+                            fichier2.signature = calculate_md5(fichier2.cheminfichier)
+                            if fichier1.signature == fichier2.signature :
+                                print(fichier1.nom, "et", fichier2.nom, "sont identiques!!")
+                                print("SUPPRESSION DU FICHIER : ", fichier2.nom)
+                                os.remove(fichier2.cheminfichier)
+            else:
+                print(fichier1.nom, "et", fichier2.nom, "sont différents.")
+            print("===---------------===")
+
+            '''idem du checkup précédent, sans anti répétition car les fichiers de deux dossiers différents ne peuvent pas se rescanner entre eux'''
+
+
+
+def checkRepoCopy (repertoire1, repertoire2) :
+    print("\n\n\n=================DOUBLE REPO CHEKUP START=================\n\n\n")
+    filelist1 = []
+    filelist2 = []
+    for racine, repertoires, fichiers in os.walk(repertoire1):
+        for fichier in fichiers:
+            filelist1.append(os.path.join(racine, fichier))
+    print("====LISTE DES FICHIERS 1====")
+    print(filelist1)
+
+    for racine, repertoires, fichiers in os.walk(repertoire2):
+        for fichier in fichiers:
+            filelist2.append(os.path.join(racine, fichier))
+    print("====LISTE DES FICHIERS 1====")
+    print(filelist2)
+
+    for i in range(len(filelist1)) : 
+        print("+++================================+++")
+        print("Fichier comparant :", i)
+        fichier1 = File(filelist1[i])
+        print("+++================================+++")
+        for f in range(len(filelist2)) :
+
+            print("===---------------===")
+            print("Fichier comparé :", f)
+            fichier2 = File(filelist2[f])
+            if fichier1.extension == fichier2.extension:
+                fichier1.date = os.path.getmtime(filelist1[i])
+                print("time1 : ", fichier1.date)
+                fichier2.date = os.path.getmtime(filelist2[f])
+                print("time2 : ", fichier2.date)
+                if fichier1.date == fichier2.date :
+                    fichier1.taille = os.path.getsize(filelist1[i])
+                    print("size1 : ", fichier1.taille)
+                    fichier2.taille = os.path.getsize(filelist2[f])
+                    print("size1 : ", fichier2.taille)
+                    if fichier1.taille == fichier2.taille :
+                        with open(filelist1[i], "rb") as g:
+                            premiers_octets = g.read(5)
+                        fichier1.premoct = octets_vers_chaine_hex(premiers_octets)
+                        with open(filelist2[f], "rb") as g:
+                            premiers_octets = g.read(5)
+                        fichier2.premoct = octets_vers_chaine_hex(premiers_octets)
+                        if fichier1.premoct == fichier2.premoct : 
+                            fichier1.signature = calculate_md5(fichier1.cheminfichier)
+                            fichier2.signature = calculate_md5(fichier2.cheminfichier)
+                            if fichier1.signature == fichier2.signature :
+                                print(fichier1.nom, "et", fichier2.nom, "sont identiques!!")
+            else:
+                print(fichier1.nom, "et", fichier2.nom, "sont différents.")
+                if fichier1.nom == fichier2.nom:
+                    if fichier1.date < fichier2.nom:
+                        shutil.copy2(fichier2.cheminfichier, fichier1.cheminfichier)
+                        print("Copie de : ", fichier2.nom+fichier2.extension)
+                        print("Copie effectuée dans ",fichier1.cheminfichier)
+                else:
+                    shutil.copy2(fichier2.cheminfichier, repertoire1+"\\"+fichier2.nom+fichier2.extension)
+                    print("Copie de : ", fichier2.nom+fichier2.extension)
+                    print("Copie effectuée dans ",repertoire1+"\\"+fichier2.nom+fichier2.extension)
+            print("===---------------===")
+
+            '''idem du checkup précédent, sans anti répétition car les fichiers de deux dossiers différents ne peuvent pas se rescanner entre eux'''
 
     
 
@@ -212,3 +333,6 @@ print(fichiertest.taille)
 print (premiers_octets_test)
 print (chaine_hex)
 print('hash:', calculate_md5(fichiertest.cheminfichier))
+
+
+checkRepoCopy ("C:\\Users\\Nicolas\\Desktop\\repo MNS\\python_exo_doublons\\dossier1copyme","C:\\Users\\Nicolas\\Desktop\\repo MNS\\python_exo_doublons\\dossier2copyme")
