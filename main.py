@@ -307,6 +307,48 @@ def checkRepoCopy (repertoire1, repertoire2) :
             print("===---------------===")
 
             '''idem du checkup précédent, sans anti répétition car les fichiers de deux dossiers différents ne peuvent pas se rescanner entre eux'''
+    
+
+def checkTailleTotale (repertoire1) :
+    filelist1 = []
+    tailleTotale = 0
+    totalTexte = 0
+    totalImage = 0
+    totalVideo = 0
+    totalAudio = 0
+    totalAutres = 0
+    for racine, repertoires, fichiers in os.walk(repertoire1):
+        for fichier in fichiers:
+            filelist1.append(os.path.join(racine, fichier))
+    print("====LISTE DES FICHIERS 1====")
+    print(filelist1)
+    for i in range(len(filelist1)) : 
+        print("+++================================+++")
+        print("fichier testé :", i)
+        fichier1 = File(filelist1[i])
+        print("+++================================+++")
+        fichier1.taille = os.path.getsize(filelist1[i])
+        if fichier1.extension == ".txt" or fichier1.extension == ".doc" or fichier1.extension == ".docx" or fichier1.extension == ".odt" or fichier1.extension == ".csv" or fichier1.extension == ".xls" or fichier1.extension == ".tppt" or fichier1.extension == ".odp" :
+            totalTexte =+ fichier1.taille
+            tailleTotale = tailleTotale + fichier1.taille
+        if fichier1.extension == ".jpg" or fichier1.extension == ".png" or fichier1.extension == ".bmp" or fichier1.extension == ".gif" or fichier1.extension == ".svg" :
+            totalImage =+ fichier1.taille
+            tailleTotale = tailleTotale + fichier1.taille
+        if fichier1.extension == ".mp4" or fichier1.extension == ".avi" or fichier1.extension == ".mov" or fichier1.extension == ".mpeg" or fichier1.extension == ".wmv" :
+            totalVideo =+ fichier1.taille
+            tailleTotale = tailleTotale + fichier1.taille
+        if fichier1.extension == ".mp3" or fichier1.extension == ".mp2" or fichier1.extension == ".wav" or fichier1.extension == ".bwf" :
+            totalAudio =+ fichier1.taille
+            tailleTotale = tailleTotale + fichier1.taille
+        else:
+            totalAutres = fichier1.taille
+            tailleTotale = tailleTotale + fichier1.taille
+    print("Taille totale de tous les fichiers : ", tailleTotale, "octets")
+    print("Taille totale des fichiers TEXTE : ", totalTexte, "octets")
+    print("Taille totale des fichiers IMAGE : ", totalImage, "octets")
+    print("Taille totale des fichiers VIDEO : ", totalVideo, "octets")
+    print("Taille totale des fichiers AUDIO : ", totalAudio, "octets")
+    print("Taille totale des fichiers AUTRE : ", totalAutres, "octets")
 
 '''-----------------Code de thomas----------------------'''
 
@@ -398,7 +440,6 @@ try:
     print("Hash MD5 :", File2.calculate_md5(fichiertest.cheminfichier))
 except FileNotFoundError as e:
     print(e)
-    
 
 
 '''------------------------Zone de TEST------------------------'''
@@ -426,6 +467,8 @@ print (premiers_octets_test)
 print (chaine_hex)
 print('hash:', calculate_md5(fichiertest.cheminfichier))
 
+checkTailleTotale("C:\\Users\\Nicolas\\Desktop\\repo MNS\\python_exo_doublons\\dossier_test")
+
 
 """checkRepoCopy ("C:\\Users\\Nicolas\\Desktop\\repo MNS\\python_exo_doublons\\dossier1copyme","C:\\Users\\Nicolas\\Desktop\\repo MNS\\python_exo_doublons\\dossier2copyme")"""
-checkRepoDel ("C:\\Users\\Nicolas\\Desktop\\repo MNS\\python_exo_doublons\\dossier1delme","C:\\Users\\Nicolas\\Desktop\\repo MNS\\python_exo_doublons\\dossier2delme")
+"""checkRepoDel ("C:\\Users\\Nicolas\\Desktop\\repo MNS\\python_exo_doublons\\dossier1delme","C:\\Users\\Nicolas\\Desktop\\repo MNS\\python_exo_doublons\\dossier2delme")"""
