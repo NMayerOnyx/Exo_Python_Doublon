@@ -3,6 +3,8 @@ import time
 import hashlib
 import shutil
 
+'''-----------------Code de nicolas----------------------'''
+
 class File :
 
     """Classe pour fichier"""
@@ -306,10 +308,100 @@ def checkRepoCopy (repertoire1, repertoire2) :
 
             '''idem du checkup précédent, sans anti répétition car les fichiers de deux dossiers différents ne peuvent pas se rescanner entre eux'''
 
+'''-----------------Code de thomas----------------------'''
+
+
+import datetime
+
+class File2:
+    """Classe représentant un fichier."""
+    
+    def __init__(self, chemin_fichier: str):
+        """Initialisation avec nom, chemin, extension, taille et date de modification."""
+        self.cheminfichier = chemin_fichier
+        if not os.path.isfile(chemin_fichier):
+            raise FileNotFoundError(f"Erreur : Le fichier '{chemin_fichier}' n'existe pas.")
+
+        self.nom, self.extension = os.path.splitext(os.path.basename(chemin_fichier))
+        self.taille = os.path.getsize(chemin_fichier)
+        self.date = datetime.datetime.fromtimestamp(os.path.getmtime(chemin_fichier))
+
+    @staticmethod
+    def get_folder_size(chemin_dossier: str) -> int:
+        """Calcule et retourne la taille totale d'un dossier en octets."""
+        if not os.path.isdir(chemin_dossier):
+            raise FileNotFoundError(f"Erreur : Le dossier '{chemin_dossier}' n'existe pas.")
+
+        return sum(
+            os.path.getsize(os.path.join(dossier_racine, fichier))
+            for dossier_racine, _, fichiers in os.walk(chemin_dossier)
+            for fichier in fichiers
+        )
+
+    @staticmethod
+    def check_taille_totale(repertoire: str):
+        """Analyse la taille des fichiers d'un dossier et les classe par type."""
+        if not os.path.isdir(repertoire):
+            raise FileNotFoundError(f"Erreur : Le dossier '{repertoire}' n'existe pas.")
+
+        extensions = {
+            "texte": [".txt", ".doc", ".docx", ".odt", ".csv", ".xls", ".ppt", ".odp"],
+            "image": [".jpg", ".png", ".bmp", ".gif", ".svg"],
+            "video": [".mp4", ".avi", ".mov", ".mpeg", ".wmv"],
+            "audio": [".mp3", ".mp2", ".wav", ".bwf"],
+        }
+
+        total_sizes = {key: 0 for key in extensions}
+        total_sizes["autres"] = 0
+        total_general = 0
+
+        for racine, _, fichiers in os.walk(repertoire):
+            for fichier in fichiers:
+                chemin_fichier = os.path.join(racine, fichier)
+                extension = os.path.splitext(fichier)[1]
+                taille = os.path.getsize(chemin_fichier)
+
+                total_general += taille
+                for category, ext_list in extensions.items():
+                    if extension in ext_list:
+                        total_sizes[category] += taille
+                        break
+                else:
+                    total_sizes["autres"] += taille
+
+        print("Taille totale de tous les fichiers :", total_general, "octets")
+        for category, taille in total_sizes.items():
+            print(f"Taille totale des fichiers {category.upper()} : {taille} octets")
+
+    @staticmethod
+    def calculate_md5(chemin_fichier: str) -> str:
+        """Calcule le hash MD5 d'un fichier."""
+        if not os.path.isfile(chemin_fichier):
+            return "Fichier introuvable"
+
+        hasher = hashlib.md5()
+        with open(chemin_fichier, "rb") as fichier:
+            for chunk in iter(lambda: fichier.read(4096), b""):
+                hasher.update(chunk)
+
+        return hasher.hexdigest()
+
+# Exemple d'utilisation
+try:
+    fichiertest = File2("C:\\Users\\thomas\\OneDrive\\Documents\\Bureau\\Repositories\\Fichier_Doublon\\Exo_Python_Doublon\\main.py")
+
+    print(f"Nom du fichier : {fichiertest.nom}")
+    print(f"Extension : {fichiertest.extension}")
+    print(f"Taille : {fichiertest.taille} octets")
+    print(f"Dernière modification : {fichiertest.date}")
+
+    print("Hash MD5 :", File2.calculate_md5(fichiertest.cheminfichier))
+except FileNotFoundError as e:
+    print(e)
     
 
 
-'''Zone de TEST'''
+'''------------------------Zone de TEST------------------------'''
 
 repoSlot1="C:\\Users\\Nicolas\\Desktop\\repo MNS\\python_exo_doublons\\dossier_test"
 repoSlot2="C:\\Users\\Nicolas\\Desktop\\repo MNS\\python_exo_doublons\\dossier_test_2"
